@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
     'corsheaders',
-    "diary"
+    "accounts.apps.AccountsConfig",
+    "diary.apps.DiaryConfig"
 ]
 
 REST_FRAMEWORK = {
@@ -186,3 +187,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+AUTH_USER_MODEL = 'accounts.CustomUser'

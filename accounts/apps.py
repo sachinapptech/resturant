@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class DiaryConfig(AppConfig):
+class AccountsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "diary"
+    name = "accounts"
 
     def ready(self):
-        import diary.signals
+        import accounts.signals
