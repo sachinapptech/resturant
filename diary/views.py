@@ -44,7 +44,6 @@ def cuisine_detail_update_delete(request, pk):
         return Response({'detail': 'Cuisine deleted'}, status=status.HTTP_204_NO_CONTENT)
 
 
-# VisitorProfile Views
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def visitor_profile(request):
@@ -54,6 +53,7 @@ def visitor_profile(request):
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def visit_list_create(request):
     if request.method == 'GET':
         visits = Visit.objects.all()
