@@ -1,45 +1,58 @@
 from django.contrib import admin
-from .models import Cuisine, CuisinePhoto, VisitorProfile, Visit
+from .models import (Restaurant,RestaurantPhoto,Review,Cuisine,CuisinePhoto,VisitorProfile,Visit)
 
-class CuisinePhotoInline(admin.TabularInline):
-    model = CuisinePhoto
+
+class RestaurantPhotoInline(admin.TabularInline):
+    model = RestaurantPhoto
     extra = 1
-    fields = ('photo',)
-    max_num = 10
 
+class ReviewInline(admin.TabularInline):
+    model = Review
+
+class RestaurantAdmin(admin.ModelAdmin):
+    list_display = ('name','city','average_rating','total_reviews','created_at','updated_at')
+    search_fields = ('name','city','address')
+    list_filter = ('city','cuisines')
+    inlines = [RestaurantPhotoInline,ReviewInline]
+    readonly_fields = ('average_rating','total_reviews')
+
+    def average_rating(self,obj):
+        return obj.average_rating()
+    average_rating.short_description = 'Total Reviews'
+
+class ResturantPhotoAdmin(admin.ModelAdmin):
+    list_display = ('restaurant','photo','uploaded_at')
+    list_filter = ('restaurant',)
+    search_fields = ('restaurant__name',)
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display =('restaurant','visitor','rating','created_at')
+    list_filter = ('rating','created_at')
+    search_fields = ('restaurant__name','visitor__username','comment')
 
 class CuisineAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'views')
+    list_display = ('name','price','views')
     search_fields = ('name',)
-    list_filter = ('price',)
-    inlines = [CuisinePhotoInline]
+    list_filter = ('views',)
 
-class VisitorProfileInline(admin.TabularInline):
-    model = VisitorProfile
-    extra = 1  # Number of empty forms to display (adjust as needed)
-    fields = ('user', 'preferred_cuisine') 
-
-class VisitInline(admin.TabularInline):
-    model = Visit
-    extra = 1  # Number of empty forms to display
-    fields = ('cuisine', 'expense', 'comment', 'rating', 'visit_date')  # Fields you want to display
-
+class CuisinePhotoAdmin(admin.ModelAdmin):
+    list_display = ('cuisine','photo')
+    search_fields = ('cuisine__name',)
 
 class VisitorProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'name', 'place', 'email', 'preferred_cuisine')
-    search_fields = ('user__username', 'name', 'email')
-    list_filter = ('place',)
-
-
+    list_display = ('user','name','email','place','preferred_cuisine')
+    search_fields = ('user__username','name','email','place')
+    list_filter = ('preferred_cuisine',)
 
 class VisitAdmin(admin.ModelAdmin):
-    list_display = ('visitor', 'cuisine', 'visit_date', 'expense')
-    search_fields = ('visitor__name', 'cuisine__name')
-    list_filter = ('visit_date', 'cuisine','visitor')
-    date_hierarchy = 'visit_date'
+    list_display = ('visitor','cuisine','expense','rating','visit_date')
+    list_filter = ('rating','visit_date')
+    search_fields = ('visitor__name','cuisine__name','comment')
 
-# Correctly register models with their admin configurations
-admin.site.register(Cuisine, CuisineAdmin)
-admin.site.register(CuisinePhoto)  # Assuming you want to manage CuisinePhoto directly as well
-admin.site.register(VisitorProfile, VisitorProfileAdmin)
-admin.site.register(Visit, VisitAdmin)  # Correct registration of the Visit model with VisitAdmin
+admin.site.register(Restaurant,RestaurantAdmin)
+admin.site.register(RestaurantPhoto,ResturantPhotoAdmin)
+admin.site.register(Review,ReviewAdmin)
+admin.site.register(Cuisine,CuisineAdmin)
+admin.site.register(CuisinePhoto,CuisinePhotoAdmin)
+admin.site.register(VisitorProfile,VisitorProfileAdmin)
+admin.site.register(Visit,VisitAdmin)
