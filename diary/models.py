@@ -72,7 +72,7 @@ class CuisinePhoto(models.Model):
 
 class VisitorProfile(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="profile"
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="visitorprofile"
     )
     name = models.CharField(max_length=255, null=True, blank=True)
     place = models.CharField(max_length=255, null=True, blank=True)
@@ -88,7 +88,7 @@ class VisitorProfile(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.name:
-            self.name = self.user.get_full_name() or self.user.username
+            self.name = self.user.get_full_name or self.user.username
         if not self.email:
             self.email = self.user.email
         if not self.place and hasattr(self.user, 'place'):

@@ -2,21 +2,14 @@
 
 This project provides APIs to manage cuisines, visitors, visits, and visitor status.
 
-## Features
 
-- Manage cuisines and their photos.
-- Create, read, update, and delete cuisines.
-- Record visitor visits, expenses, and ratings.
-- Retrieve visitor status, including total visits, total expenses, and ordered cuisines.
-
----
 
 ## Installation and Setup
 
 ### Prerequisites
 
-- Python 3.8+
-- Django 3.2+
+- Python 3.9+
+- Django 5.1
 - Django REST Framework
 - PostgreSQL (optional, for production environments)
 
@@ -32,7 +25,7 @@ This project provides APIs to manage cuisines, visitors, visits, and visitor sta
    Create a virtual environment and install dependencies:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate 
    pip install -r requirements.txt
    ```
 
@@ -64,91 +57,48 @@ This project provides APIs to manage cuisines, visitors, visits, and visitor sta
 
 ## API Endpoints
 
+### User Endpoints
+Login           /GET /  http://localhost:8000/api/auth/jwt/create
+User profile    /GET /  http://localhost:8000/api/auth/users/me/
+User register   /POST / http://localhost:8000/api/auth/users/
+User activation /POST / http://localhost:8000/api/auth/users/activation/
+User delete     /DELETE /http://localhost:8000/api/auth/users/me/
+User update     /PATCH / http://localhost:8000/api/auth/users/me/
+User set new password / POST / http://localhost:8000/api/auth/users/set_password/
+User reset password  /POST / http://localhost:8000/api/auth/users/reset_password/
+User reset password confirmation /POST / http://localhost:8000/api/auth/users/set_password/
+ 
+### Resturant Endpoints
+Restaurant list / GET /http://localhost:8000/api/diary/restaurants/
+Restaurant single-create /POST / http://localhost:8000/api/diary/restaurants/
+Resturant single-get /GET /http://localhost:8000/api/diary/restaurants/1/
+Restaurant single-update /PATCH / http://localhost:8000/api/diary/restaurants/1/
+Restaurant single-delete /DELETE / http://localhost:8000/api/diary/restaurants/1/
+Resturant reviews-list/GET /http://localhost:8000/api/diary/restaurants/1/reviews
+Resturant photos /GET / http://localhost:8000/api/diary/restaurants/1/photos
+
+
 ### Cuisine Endpoints
+Cuisine list / GET /http://localhost:8000/api/diary/cuisines/
+Cuisine signe-create / POST/ http://localhost:8000/api/diary/cuisines/
+Cuisine single-get /GET / http://localhost:8000/api/diary/cuisines/1/
+Cuisine single-update /GET / http://localhost:8000/api/diary/cuisines/1/
+Cuisine single photos /GET / http://localhost:8000/api/diary/cuisines/1/photos
 
-| **Action**                     | **Method** | **Endpoint**           |
-|--------------------------------|------------|------------------------|
-| List/Create Cuisines           | `GET/POST` | `/api/cuisines/`       |
-| Retrieve/Update/Delete Cuisine | `GET/PUT/DELETE` | `/api/cuisines/<id>/` |
 
-### Visitor Endpoints
+### Visits Endpoints
+Visits list /GET / http://localhost:8000/api/diary/visits/
+Visits single-create /POST /  http://localhost:8000/api/diary/visits/
+Visits single-get /GET / http://localhost:8000/api/diary/visits/1/
+Visites single-update /PATCH / http://localhost:8000/api/diary/visits/1/
+Visits single-delete /DELETE / http://localhost:8000/api/diary/visits/1/
 
-| **Action**            | **Method** | **Endpoint**   |
-|-----------------------|------------|----------------|
-| Get Visitor Profile   | `GET`      | `/api/profile/`|
-| List/Create Visits    | `GET/POST` | `/api/visits/` |
-| Visitor Statistics    | `GET`      | `/api/stats/`  |
-
----
-
-## Models Overview
-
-### Cuisine
-- **Fields:**
-  - `name`: Name of the cuisine.
-  - `price`: Price of the cuisine.
-  - `views`: Number of views (default: 0).
-
-### CuisinePhoto
-- **Fields:**
-  - `cuisine`: Foreign key to Cuisine.
-  - `photo`: Image file for the cuisine.
-
-### VisitorProfile
-- **Fields:**
-  - `user`: Linked to the authenticated user.
-  - `name`, `place`, `contact_info`, `email`: Visitor details.
-  - `preferred_cuisine`: FK to `Cuisine`.
-
-### Visit
-- **Fields:**
-  - `visitor`: Linked to `VisitorProfile`.
-  - `cuisine`: FK to `Cuisine`.
-  - `expense`, `comment`, `rating`, `visit_date`: Details of the visit.
 
 ---
-
-## Example Requests
-
-### Create a Cuisine
-```json
-POST /api/cuisines/
-{
-    "name": "Sushi",
-    "price": "12.99"
-}
-```
-
-### Retrieve Visitor Statistics
-```json
-GET /api/stats/
-```
-**Response:**
-```json
-{
-    "total_visits": 5,
-    "total_expenses": "125.50",
-    "cuisines_ordered": ["Sushi", "Pizza"]
-}
-```
-
----
-
 ## Testing
-
-Run tests using:
-```bash
 python manage.py test
-```
 
 ---
-
-## Contributing
-
-Contributions are welcome! Feel free to open an issue or submit a pull request.
-
----
-
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This version is designed to be clean, concise, and easy to follow for developers who need to quickly get up to speed with your project.

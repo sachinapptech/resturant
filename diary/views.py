@@ -18,14 +18,14 @@ from .serializers import (
 )
 
 class CustomPagination(PageNumberPagination):
-    page_size = 1
+    page_size = 5
     page_size_query_param = 'page_size'
     max_page_size = 100
 
 
 
 class RestaurantListCreateView(ListCreateAPIView):
-    queryset = Restaurant.objects.all()
+    queryset = Restaurant.objects.all().order_by('name')
     serializer_class = RestaurantSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = CustomPagination

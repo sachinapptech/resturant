@@ -1,6 +1,7 @@
 
 
 from pathlib import Path
+import os
 
 import environ
 env = environ.Env(DEBUG=(bool,False))
@@ -30,16 +31,21 @@ DJANGO_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django_filters",
     "django.contrib.sites",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
+    "django_filters",
     "corsheaders",
+    "djoser",
+    "rest_framework_simplejwt"
 ]
 
 LOCAL_APPS = [
-    "accounts.apps.AccountsConfig",
+    "users.apps.UsersConfig",
+    'common.apps.CommonConfig',
+    'userprofile.apps.UserprofileConfig',
+    
     "diary.apps.DiaryConfig"
 ]
 
@@ -53,9 +59,7 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
+   
     # 'DEFAULT_AUTHENTICATION_CLASSES': [
     #     'rest_framework.authentication.SessionAuthentication',
     #     'rest_framework.authentication.TokenAuthentication',
@@ -72,41 +76,43 @@ from datetime import timedelta
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
-    "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
-
-    "ALGORITHM": "HS256",
-    "VERIFYING_KEY": "",
-    "AUDIENCE": None,
-    "ISSUER": None,
-    "JSON_ENCODER": None,
-    "JWK_URL": None,
-    "LEEWAY": 0,
-
-    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_TYPES": ("JWT",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "user_id",
-    "USER_AUTHENTICATION_RULE": "rest_framework_simplejwt.authentication.default_user_authentication_rule",
-
     "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
-    "TOKEN_TYPE_CLAIM": "token_type",
-    "TOKEN_USER_CLASS": "rest_framework_simplejwt.models.TokenUser",
-
-    "JTI_CLAIM": "jti",
-
-    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
-
-    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
-    "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
-    "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
-    "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
-    "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
-    "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
+    # "SIGNING_KEY":env("SIGNING_KEY")
 }
+
+DJOSER ={
+    "LOGIN_FIELD":"email",
+    "USER_CREATE_PASSWORD_RETYPE" : True,
+    "USER_CHANGED_EMAIL_CONFIRMATION":True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION":True,
+    "SEND_CONFIRMATION_EMAIL":True,
+    "PASSWORD_RESET_CONFIRM_URL":"password/reset/confirm/{uid}/{token}",
+    "SET_PASSWORD_RETYPE":True,
+    "PASSWORD_RESET_CONFIRM_RETYPE":True,
+    "USERNAME_RESET_CONFIRM_URL":"email/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL":"activated/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL":True,
+    "SERIALIZERS":{
+        "user_create":"users.serializers.CreateUserSerializer",
+        "user":"users.serializers.UserSerializer",
+        "current_user":"users.serializers.UserSerializer",
+        "user_delete":"djoser.serializers.UserDeleteSerializer"
+    }
+}
+
+# Email Configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = env('EMAIL_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_PASS')
+DEFAULT_FROM_EMAIL = "sachin9958soni@gmail.com"
+DOMAIN = env("DOMAIN")
+
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -215,7 +221,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-AUTH_USER_MODEL = 'accounts.CustomUser'
+# AUTH_USER_MODEL = 'accounts.CustomUser'
 
+AUTH_USER_MODEL = 'users.User'
 
 SITE_ID = 1
